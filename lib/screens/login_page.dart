@@ -1,20 +1,19 @@
+// ignore_for_file: unnecessary_string_escapes
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:scholar_chat/screens/chat_page.dart';
 import 'package:scholar_chat/screens/register_page.dart';
 import 'package:scholar_chat/widgets/custom_button.dart';
 import 'package:scholar_chat/widgets/custom_textfield.dart';
 
-import '../helper/Show_Snak_Bar.dart';
+import '../helper/Show_SnakBar.dart';
 import '../widgets/const.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key});
+  // ignore: use_key_in_widget_constructors
+  const LoginPage({Key? key});
   static String id = "Login";
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -37,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
             key: formkey,
             child: ListView(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 75,
                 ),
                 Image.asset(
@@ -46,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text(
                       "Scholar Chat",
                       style: TextStyle(
@@ -56,11 +55,11 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 75,
                 ),
                 Row(
-                  children: [
+                  children: const [
                     Text(
                       "LOGIN",
                       style: TextStyle(
@@ -70,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 textformfield(
@@ -79,16 +78,17 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   hinttext: 'Email',
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 textformfield(
-                  onchanged: (data) {
+                    obscureText : true,
+                    onchanged: (data) {
                     password = data;
                   },
                   hinttext: 'Password',
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 button(
@@ -98,7 +98,8 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {});
                       try {
                         await loginuser();
-                        Navigator.pushNamed(context, chatpage.id);
+                        Navigator.pushNamed(context, chatpage.id,
+                            arguments: email);
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'wrong-password') {
                           ShowSnakBar(
@@ -115,13 +116,13 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   tittle: 'LOGIN',
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "don\'t have any account",
                       style: TextStyle(
                         fontSize: 15,
@@ -132,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                       onTap: () {
                         Navigator.pushNamed(context, Registerpage.id);
                       },
-                      child: Text(
+                      child: const Text(
                         "  Register",
                         style:
                             TextStyle(fontSize: 15, color: Color(0xffC7EDE6)),
@@ -140,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 75,
                 ),
               ],
@@ -152,6 +153,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> loginuser() async {
+    // ignore: unused_local_variable
     UserCredential user = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email!, password: password!);
     // print(user.user!.displayName);

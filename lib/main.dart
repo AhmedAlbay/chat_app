@@ -10,16 +10,18 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
 );
-  runApp(ScholarChat());
+  runApp(const ScholarChat());
 }
 
 class ScholarChat extends StatelessWidget {
+  const ScholarChat({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        LoginPage.id: (context) => LoginPage(),
-        Registerpage.id: (context) => Registerpage(),
+        LoginPage.id: (context) => const LoginPage(),
+        Registerpage.id: (context) => const Registerpage(),
          chatpage.id:(context) => chatpage(),
       },
       initialRoute: LoginPage.id,

@@ -1,22 +1,23 @@
+// ignore_for_file: camel_case_types, must_be_immutable, avoid_types_as_parameter_names, non_constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scholar_chat/model/message.dart';
 import 'package:scholar_chat/widgets/const.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/chatBuble.dart';
-import 'package:flutter/src/widgets/scroll_controller.dart';
 
 class chatpage extends StatelessWidget {
   chatpage({Key? key}) : super(key: key);
   static String id = 'chatpage';
-  final  _controller= ScrollController();
+  final _controller = ScrollController();
   CollectionReference message =
       FirebaseFirestore.instance.collection(kMessageCollections);
   TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+      var email=ModalRoute.of(context)!.settings.arguments ;
     return StreamBuilder<QuerySnapshot>(
-      stream: message.orderBy(kCreatedAt,descending:true).snapshots(),
+      stream: message.orderBy(kCreatedAt, descending: true).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Message> messagelist = [];
@@ -34,7 +35,7 @@ class chatpage extends StatelessWidget {
                     klog,
                     height: 50,
                   ),
-                  Text('Chat'),
+                  const Text('Chat'),
                 ],
               ),
               centerTitle: true,
@@ -43,36 +44,36 @@ class chatpage extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.builder(
-                    reverse: true,
-                    controller: _controller,
+                      reverse: true,
+                      controller: _controller,
                       itemCount: messagelist.length,
                       itemBuilder: (context, Index) {
-                        return chatBuble(
+                        return messagelist[Index].id ==email ? chatBuble(
                           message: messagelist[Index],
-                        );
+                        )
+                        : chatBubleForFriend(message: messagelist[Index],);
                       }),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    
                     controller: controller,
-                         
                     onSubmitted: (data) {
                       message.add({
                         'message': data,
                         kCreatedAt: DateTime.now(),
+                        'id':email,
                       });
                       controller.clear();
                       _controller.animateTo(
                         0,
-                        duration: Duration(seconds: 2),
+                        duration: const Duration(seconds: 2),
                         curve: Curves.fastOutSlowIn,
                       );
                     },
                     decoration: InputDecoration(
                       hintText: 'send message',
-                      suffixIcon: Icon(
+                      suffixIcon: const Icon(
                         Icons.send,
                         color: KPrimlycolor,
                       ),
@@ -81,7 +82,7 @@ class chatpage extends StatelessWidget {
                       ),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(color: KPrimlycolor)),
+                          borderSide: const BorderSide(color: KPrimlycolor)),
                     ),
                   ),
                 ),
@@ -89,7 +90,7 @@ class chatpage extends StatelessWidget {
             ),
           );
         } else {
-          return Text('Loading.....');
+          return const Text('Loading.....');
         }
       },
     );

@@ -1,7 +1,9 @@
+// ignore_for_file: must_be_immutable, camel_case_types
+
 import 'package:flutter/material.dart';
 
 class button extends StatelessWidget {
-  button({ this.onTap, required this.tittle});
+  button({Key? key,  this.onTap, required this.tittle}) : super(key: key);
   VoidCallback? onTap;
   String tittle;
   @override
@@ -18,7 +20,7 @@ class button extends StatelessWidget {
         child: Center(
           child: Text(
             tittle,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 15,
             ),
           ),

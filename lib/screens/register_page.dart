@@ -2,13 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:scholar_chat/screens/chat_page.dart';
-import '../helper/Show_Snak_Bar.dart';
+import '../helper/Show_SnakBar.dart';
 import '../widgets/const.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_textfield.dart';
 
 class Registerpage extends StatefulWidget {
-  Registerpage({Key? key}) : super(key: key);
+  const Registerpage({Key? key}) : super(key: key);
   static String id = "Register";
 
   @override
@@ -36,6 +36,7 @@ class _RegisterpageState extends State<Registerpage> {
             key: formkey,
             child: ListView(
               children: [
+                // ignore: prefer_const_constructors
                 SizedBox(
                   height: 75,
                 ),
@@ -45,7 +46,7 @@ class _RegisterpageState extends State<Registerpage> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text(
                       "Scholar Chat",
                       style: TextStyle(
@@ -55,12 +56,13 @@ class _RegisterpageState extends State<Registerpage> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 75,
                 ),
                 Row(
+                  // ignore: prefer_const_literals_to_create_immutables
                   children: [
-                    Text(
+                    const Text(
                       "REGISTER",
                       style: TextStyle(
                         fontSize: 24,
@@ -69,7 +71,7 @@ class _RegisterpageState extends State<Registerpage> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 textformfield(
@@ -78,7 +80,7 @@ class _RegisterpageState extends State<Registerpage> {
                   },
                   hinttext: 'Email',
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 textformfield(
@@ -87,7 +89,7 @@ class _RegisterpageState extends State<Registerpage> {
                   },
                   hinttext: 'Password',
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 button(
@@ -97,7 +99,7 @@ class _RegisterpageState extends State<Registerpage> {
                       setState(() {});
                       try {
                         await registeruser();
-                        Navigator.pushNamed(context, chatpage.id);
+                        Navigator.pushNamed(context, chatpage.id,arguments: email);
                         //ShowSnakBar(context, 'The Register is Success ');
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'weak-password') {
@@ -116,13 +118,13 @@ class _RegisterpageState extends State<Registerpage> {
                   },
                   tittle: 'REGISTER',
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "have already account",
                       style: TextStyle(
                         fontSize: 15,
@@ -133,7 +135,7 @@ class _RegisterpageState extends State<Registerpage> {
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: Text(
+                      child: const Text(
                         "  Login",
                         style:
                             TextStyle(fontSize: 15, color: Color(0xffC7EDE6)),
@@ -141,7 +143,7 @@ class _RegisterpageState extends State<Registerpage> {
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 75,
                 ),
               ],
@@ -153,6 +155,7 @@ class _RegisterpageState extends State<Registerpage> {
   }
 
   Future<void> registeruser() async {
+    // ignore: unused_local_variable
     UserCredential user = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email!, password: password!);
     // print(user.user!.displayName);
