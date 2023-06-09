@@ -1,0 +1,119 @@
+class DataPreprocessingWidget(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.layout = QtWidgets.QVBoxLayout(self)
+        self.setLayout(self.layout)
+
+        self.pca_btn = QtWidgets.QPushButton("Dimensionality Reduction (PCA)", self)
+        self.pca_btn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.layout.addWidget(self.pca_btn)
+
+        self.imputer_btn = QtWidgets.QPushButton("Missing Value Imputation", self)
+        self.imputer_btn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.layout.addWidget(self.imputer_btn)
+
+        self.scaling_btn = QtWidgets.QPushButton("Normalization (Scaling)", self)
+        self.scaling_btn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.layout.addWidget(self.scaling_btn)
+
+        self.encoding_btn = QtWidgets.QPushButton("Encoding", self)
+        self.encoding_btn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.layout.addWidget(self.encoding_btn)
+
+        self.sampling_btn = QtWidgets.QPushButton("Imbalanced Data Sampling", self)
+        self.sampling_btn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.layout.addWidget(self.sampling_btn)
+
+        # Connect buttons to their respective functionalities
+        self.pca_btn.clicked.connect(self.dimensionality_reduction)
+        self.imputer_btn.clicked.connect(self.missing_value_imputation)
+        self.scaling_btn.clicked.connect(self.normalization)
+        self.encoding_btn.clicked.connect(self.encoding)
+        self.sampling_btn.clicked.connect(self.imbalanced_data_sampling)
+
+    def dimensionality_reduction(self):
+        if self.data_frame is None:
+            QMessageBox.warning(self, "Error", "No data frame loaded.")
+            return
+
+        pca = PCA(n_components=2)  # Set the desired number of components
+        transformed_data = pca.fit_transform(self.data_frame)
+        transformed_df = pd.DataFrame(data=transformed_data, columns=["PC1", "PC2"])
+        
+        dialog = QtWidgets.QDialog(self)
+        dialog.setWindowTitle("Dimensionality Reduction (PCA)")
+        dialog.setLayout(QtWidgets.QVBoxLayout())
+        fig = Figure(figsize=(5, 5))
+        canvas = FigureCanvas(fig)
+        ax = fig.add_subplot(111)
+        ax.scatter(transformed_df["PC1"], transformed_df["PC2"])
+        ax.set_xlabel("PC1")
+        ax.set_ylabel("PC2")
+        ax.set_title("PCA Plot")
+            
+        canvas.draw()
+        dialog.layout().addWidget(canvas)
+        dialog.exec_()
+
+
+    def missing_value_imputation(self):
+        imputer = SimpleImputer()  # Use the default strategy ("mean") or specify another strategy if needed
+        imputed_data = imputer.fit_transform(self.data_frame)
+        imputed_df = pd.DataFrame(data=imputed_data, columns=self.data_frame.columns)
+
+        dialog = QtWidgets.QMessageBox(self)
+        dialog.setWindowTitle("Imputed Data")
+        dialog.setText(imputed_df.head().to_string())
+        dialog.exec_()
+
+    def normalization(self):
+        scaler = StandardScaler()  # Use the desired scaling method (StandardScaler, MinMaxScaler, etc.)
+        scaled_data = scaler.fit_transform(self.data_frame)
+        scaled_df = pd.DataFrame(data=scaled_data, columns=self.data_frame.columns)
+
+        dialog = QtWidgets.QMessageBox(self)
+        dialog.setWindowTitle("Scaled Data")
+        dialog.setText(scaled_df.head().to_string())
+        dialog.exec_()
+    def encoding(self):
+        if self.data_frame is None:
+            QMessageBox.warning(self, "Error", "No data frame loaded.")
+            return
+
+        encoder = OneHotEncoder()  # Use the desired encoding method (OneHotEncoder, LabelEncoder, etc.)
+        encoded_data = encoder.fit_transform(self.data_frame)
+        encoded_df = pd.DataFrame(data=encoded_data.toarray(), columns=encoder.get_feature_names_out())
+    
+        dialog = QtWidgets.QMessageBox(self)
+        dialog.setWindowTitle("Encoded Data")
+        dialog.setText(encoded_df.head().to_string())
+        dialog.exec_()
+        
+    def imbalanced_data_sampling(self):
+       if self.data_frame is None:
+          QtWidgets.QMessageBox.warning(self, "Error", "No data frame loaded.")
+          return
+
+       target_column, ok = QtWidgets.QInputDialog.getItem(self, "Target Column", "Select the target column:", self.data_frame.columns, 0, False)
+       if ok:
+           # Check if the selected target column is valid
+           if target_column in self.data_frame.columns:
+               # Implement your imbalanced data sampling functionality here
+               # Sample code: Random undersampling of majority class
+               class_counts = self.data_frame[target_column].value_counts()
+               majority_class = class_counts.idxmax()
+               minority_class = class_counts.idxmin()
+               majority_samples = self.data_frame[self.data_frame[target_column] == majority_class]
+               minority_samples = self.data_frame[self.data_frame[target_column] == minority_class]
+               majority_downsampled = majority_samples.sample(len(minority_samples))
+               downsampled_data = pd.concat([majority_downsampled, minority_samples])
+               downsampled_data.reset_index(drop=True, inplace=True)
+    
+               # Show message box with downsampled data information
+               dialog = QtWidgets.QMessageBox(self)
+               dialog.setWindowTitle("Imbalanced Data Sampling")
+               dialog.setText("Downsampled data:\n\n" + downsampled_data.to_string())
+               dialog.exec_()
+           else:
+               QtWidgets.QMessageBox.warning(self, "Error", "Invalid target column name.")
+

@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types, must_be_immutable, avoid_types_as_parameter_names, non_constant_identifier_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scholar_chat/model/message.dart';
 import 'package:scholar_chat/widgets/const.dart';
@@ -15,7 +16,7 @@ class chatpage extends StatelessWidget {
   TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-      var email=ModalRoute.of(context)!.settings.arguments ;
+    var email = ModalRoute.of(context)!.settings.arguments;
     return StreamBuilder<QuerySnapshot>(
       stream: message.orderBy(kCreatedAt, descending: true).snapshots(),
       builder: (context, snapshot) {
@@ -48,10 +49,13 @@ class chatpage extends StatelessWidget {
                       controller: _controller,
                       itemCount: messagelist.length,
                       itemBuilder: (context, Index) {
-                        return messagelist[Index].id ==email ? chatBuble(
-                          message: messagelist[Index],
-                        )
-                        : chatBubleForFriend(message: messagelist[Index],);
+                        return messagelist[Index].id == email
+                            ? chatBuble(
+                                message: messagelist[Index],
+                              )
+                            : chatBubleForFriend(
+                                message: messagelist[Index],
+                              );
                       }),
                 ),
                 Padding(
@@ -62,7 +66,7 @@ class chatpage extends StatelessWidget {
                       message.add({
                         'message': data,
                         kCreatedAt: DateTime.now(),
-                        'id':email,
+                        'id': email,
                       });
                       controller.clear();
                       _controller.animateTo(
@@ -73,10 +77,19 @@ class chatpage extends StatelessWidget {
                     },
                     decoration: InputDecoration(
                       hintText: 'send message',
-                      suffixIcon: const Icon(
-                        Icons.send,
-                        color: KPrimlycolor,
-                      ),
+                      suffixIcon: CupertinoButton(
+                          child: Icon(Icons.send, color: KPrimlycolor),
+                          onPressed: () {
+                            // Handle send button press here
+                            String data = controller.text;
+                            message.add({
+                              'message': data,
+                              kCreatedAt: DateTime.now(),
+                              'id': email,
+                            });
+                            // Implement your send message logic
+                            sendMessage(data);
+                          }),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
@@ -94,5 +107,10 @@ class chatpage extends StatelessWidget {
         }
       },
     );
+  }
+
+  void sendMessage(String data) {
+    // Implement your send message logic here
+    controller.clear();
   }
 }
