@@ -1,20 +1,27 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scholar_chat/screens/blocs/bloc/auth_bloc.dart';
 import 'package:scholar_chat/screens/chat_page.dart';
-import 'package:scholar_chat/screens/cubits/cubit/chat_cubit.dart';
-import 'package:scholar_chat/screens/cubits/cubit_login/login_cubit.dart';
-import 'package:scholar_chat/screens/cubits/cubit_register/register_cubit.dart';
+
 import 'package:scholar_chat/screens/login_page.dart';
 import 'package:scholar_chat/screens/register_page.dart';
+import 'package:scholar_chat/simple_observer_class.dart';
 import 'firebase_options.dart';
+import 'screens/cubits/auth_cubit/auth_cubit.dart';
+import 'screens/cubits/chat_cubit/chat_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const ScholarChat());
+  BlocOverrides.runZoned((){
+     runApp(const ScholarChat());
+  },blocObserver: SimpleBlocObserver());
+ 
 }
 
 class ScholarChat extends StatelessWidget {
@@ -25,13 +32,13 @@ class ScholarChat extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => LoginCubit(),
-        ),
-        BlocProvider(
-          create: (context) => RegisterCubit(),
+          create: (context) => AuthCubit(),
         ),
         BlocProvider(
           create: (context) => ChatCubit(),
+        ),
+        BlocProvider(
+          create: (context) => AuthBloc(),
         ),
       ],
       child: MaterialApp(

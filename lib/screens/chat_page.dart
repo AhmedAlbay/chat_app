@@ -5,9 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scholar_chat/model/message.dart';
-import 'package:scholar_chat/screens/cubits/cubit/chat_cubit.dart';
+
 import 'package:scholar_chat/widgets/const.dart';
 import '../widgets/chatBuble.dart';
+import 'cubits/chat_cubit/chat_cubit.dart';
 
 class chatpage extends StatelessWidget {
   chatpage({Key? key}) : super(key: key);

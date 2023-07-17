@@ -4,15 +4,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:scholar_chat/screens/blocs/bloc/auth_bloc.dart';
 import 'package:scholar_chat/screens/chat_page.dart';
-import 'package:scholar_chat/screens/cubits/cubit/chat_cubit.dart';
-import 'package:scholar_chat/screens/cubits/cubit_login/login_cubit.dart';
 import 'package:scholar_chat/screens/register_page.dart';
 import 'package:scholar_chat/widgets/custom_button.dart';
 import 'package:scholar_chat/widgets/custom_textfield.dart';
 
 import '../helper/Show_SnakBar.dart';
 import '../widgets/const.dart';
+
+import 'cubits/chat_cubit/chat_cubit.dart';
 
 class LoginPage extends StatelessWidget {
   bool isloading = false;
@@ -24,7 +25,7 @@ class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginCubit, LoginState>(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is LoginLoading) {
           isloading = true;
@@ -105,8 +106,8 @@ class LoginPage extends StatelessWidget {
                   button(
                     onTap: () async {
                       if (formkey.currentState!.validate()) {
-                        BlocProvider.of<LoginCubit>(context)
-                            .loginuser(email: email!, password: password!);
+                        BlocProvider.of<AuthBloc>(context).add(
+                            LoginEvent(email: email!, password: password!));
                       } else {}
                     },
                     tittle: 'LOGIN',

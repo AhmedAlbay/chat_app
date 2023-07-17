@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:scholar_chat/screens/chat_page.dart';
-import 'package:scholar_chat/screens/cubits/cubit_register/register_cubit.dart';
+
+
 import '../helper/Show_SnakBar.dart';
 import '../widgets/const.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_textfield.dart';
+import 'cubits/auth_cubit/auth_cubit.dart';
 
 class RegisterPage extends StatelessWidget {
   String? email;
@@ -24,7 +26,7 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RegisterCubit, RegisterState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is RegisterLoading) {
           isloading = true;
@@ -36,7 +38,7 @@ class RegisterPage extends StatelessWidget {
           isloading = false;
         }
       },
-      builder: (context, State) =>ModalProgressHUD(
+      builder: (context, State) => ModalProgressHUD(
         inAsyncCall: isloading,
         child: Scaffold(
           backgroundColor: KPrimlycolor,
@@ -106,7 +108,7 @@ class RegisterPage extends StatelessWidget {
                   button(
                     onTap: () async {
                       if (formkey.currentState!.validate()) {
-                        BlocProvider.of<RegisterCubit>(context)
+                        BlocProvider.of<AuthCubit>(context)
                             .registeruser(email: email!, password: password!);
                       } else {}
                     },
